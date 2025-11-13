@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Toolkit - Advanced PDF Operations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>PDF Toolkit</h1>
+            </div>
+            <p class="subtitle">Powerful PDF operations at your fingertips</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="merge">
+                <i class="fas fa-layer-group"></i> Merge PDFs
+            </button>
+            <button class="tab-btn" data-tab="split">
+                <i class="fas fa-cut"></i> Split PDF
+            </button>
+            <button class="tab-btn" data-tab="rotate">
+                <i class="fas fa-redo"></i> Rotate PDF
+            </button>
+            <button class="tab-btn" data-tab="extract">
+                <i class="fas fa-file-alt"></i> Extract Text
+            </button>
+            <button class="tab-btn" data-tab="compress">
+                <i class="fas fa-compress"></i> Compress PDF
+            </button>
+            <button class="tab-btn" data-tab="watermark">
+                <i class="fas fa-tint"></i> Add Watermark
+            </button>
+        </div>
+
+        <div class="content-area">
+            <!-- Merge PDFs Tab -->
+            <div class="tab-content active" id="merge">
+                <div class="card">
+                    <h2><i class="fas fa-layer-group"></i> Merge Multiple PDFs</h2>
+                    <p class="description">Combine multiple PDF files into a single document</p>
+                    <form id="mergeForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="mergeUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop PDF files here or click to browse</p>
+                            <p class="file-hint">Select multiple PDF files to merge</p>
+                            <input type="file" id="mergeFiles" name="files" multiple accept=".pdf" required>
+                        </div>
+                        <div class="file-list" id="mergeFileList"></div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-magic"></i> Merge PDFs
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Split PDF Tab -->
+            <div class="tab-content" id="split">
+                <div class="card">
+                    <h2><i class="fas fa-cut"></i> Split PDF</h2>
+                    <p class="description">Extract specific pages from your PDF document</p>
+                    <form id="splitForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="splitUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop PDF file here or click to browse</p>
+                            <input type="file" id="splitFile" name="file" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pageRange">
+                                <i class="fas fa-list-ol"></i> Page Range (e.g., 1-3,5,7-9)
+                            </label>
+                            <input type="text" id="pageRange" name="page_range" 
+                                   placeholder="Leave empty to extract first page" 
+                                   class="form-control">
+                            <small>Enter page numbers separated by commas or ranges (e.g., 1-3,5,7-9)</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-cut"></i> Split PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Rotate PDF Tab -->
+            <div class="tab-content" id="rotate">
+                <div class="card">
+                    <h2><i class="fas fa-redo"></i> Rotate PDF</h2>
+                    <p class="description">Rotate all pages in your PDF document</p>
+                    <form id="rotateForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="rotateUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop PDF file here or click to browse</p>
+                            <input type="file" id="rotateFile" name="file" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="angle">
+                                <i class="fas fa-angle-right"></i> Rotation Angle
+                            </label>
+                            <select id="angle" name="angle" class="form-control">
+                                <option value="90">90° Clockwise</option>
+                                <option value="180">180° (Upside Down)</option>
+                                <option value="270">270° Clockwise (90° Counter-clockwise)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-redo"></i> Rotate PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Extract Text Tab -->
+            <div class="tab-content" id="extract">
+                <div class="card">
+                    <h2><i class="fas fa-file-alt"></i> Extract Text from PDF</h2>
+                    <p class="description">Extract all text content from your PDF document</p>
+                    <form id="extractForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="extractUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop PDF file here or click to browse</p>
+                            <input type="file" id="extractFile" name="file" accept=".pdf" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-alt"></i> Extract Text
+                        </button>
+                    </form>
+                    <div id="extractedText" class="text-output" style="display: none;">
+                        <h3>Extracted Text:</h3>
+                        <textarea readonly id="textContent" class="text-area"></textarea>
+                        <button class="btn btn-secondary" onclick="copyText()">
+                            <i class="fas fa-copy"></i> Copy Text
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compress PDF Tab -->
+            <div class="tab-content" id="compress">
+                <div class="card">
+                    <h2><i class="fas fa-compress"></i> Compress PDF</h2>
+                    <p class="description">Reduce the file size of your PDF document</p>
+                    <form id="compressForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="compressUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop PDF file here or click to browse</p>
+                            <input type="file" id="compressFile" name="file" accept=".pdf" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-compress"></i> Compress PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Watermark Tab -->
+            <div class="tab-content" id="watermark">
+                <div class="card">
+                    <h2><i class="fas fa-tint"></i> Add Watermark</h2>
+                    <p class="description">Add a text watermark to your PDF document</p>
+                    <form id="watermarkForm" enctype="multipart/form-data">
+                        <div class="file-upload-area" id="watermarkUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop PDF file here or click to browse</p>
+                            <input type="file" id="watermarkFile" name="file" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="watermarkText">
+                                <i class="fas fa-font"></i> Watermark Text
+                            </label>
+                            <input type="text" id="watermarkText" name="text" 
+                                   value="WATERMARK" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-tint"></i> Add Watermark
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing your PDF...</p>
+        </div>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
